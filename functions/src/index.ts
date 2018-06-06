@@ -1,8 +1,17 @@
 import * as functions from 'firebase-functions';
+import { dialogflow } from 'actions-on-google'
+import Repository from './repository/repository';
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
+const app = dialogflow()
+
+const repo = new Repository<IAuthor>("author");
+
+app.intent('Default Welcome Intent', conv => {
+    conv.ask('Hi, how is it going?')
+})
+
+app.intent('Default Fallback Intent', conv => {
+    conv.ask(`I didn't understand. Can you tell me something else?`)
+})
+
+exports.fulfillment = functions.https.onRequest(app);
